@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/service/transacao.dart';
+import 'package:mobile/service/transacaoService.dart';
 
 class TransacaoForm extends StatefulWidget {
-  final Transacao? Transacao;
+  final Transacao? transacao;
 
-  TransacaoForm({this.Transacao});
+  TransacaoForm({this.transacao});
 
   @override
   _TransacaoFormState createState() => _TransacaoFormState();
@@ -14,14 +15,14 @@ class _TransacaoFormState extends State<TransacaoForm> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _saldoController = TextEditingController();
-  final TransacaoService _service = TransacaoService();
+  final Transacaoservice _service = Transacaoservice();
 
   @override
   void initState() {
     super.initState();
-    if (widget.Transacao != null) {
-      _nomeController.text = widget.Transacao!.nome;
-      _saldoController.text = widget.Transacao!.saldo.toString();
+    if (widget.transacao != null) {
+      _nomeController.text = widget.transacao!.nome;
+      _saldoController.text = widget.transacao!.valor.toString();
     }
   }
 
@@ -29,9 +30,9 @@ class _TransacaoFormState extends State<TransacaoForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.Transacao == null
-            ? 'Adicionar Transacao'
-            : 'Editar Transacao'),
+        title: Text(widget.transacao == null
+            ? 'Adicionar transacao'
+            : 'Editar transacao'),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -55,7 +56,7 @@ class _TransacaoFormState extends State<TransacaoForm> {
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Por favor, insira um saldo';
+                    return 'Por favor, insira um valor';
                   }
                   return null;
                 },
@@ -64,20 +65,20 @@ class _TransacaoFormState extends State<TransacaoForm> {
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    final Transacao = Transacao(
-                      id: widget.Transacao?.id ?? '',
+                    final transacao = transacao(
+                      id: widget.transacao?.id ?? '',
                       nome: _nomeController.text,
-                      saldo: double.parse(_saldoController.text),
+                      valor: double.parse(_saldoController.text),
                     );
-                    if (widget.Transacao == null) {
-                      _service.create(Transacao);
+                    if (widget.transacao == null) {
+                      _service.create(transacao);
                     } else {
-                      _service.update(Transacao.id, Transacao);
+                      _service.update(transacao.id, transacao);
                     }
                     Navigator.pop(context);
                   }
                 },
-                child: Text(widget.Transacao == null ? 'Adicionar' : 'Salvar'),
+                child: Text(widget.transacao == null ? 'Adicionar' : 'Salvar'),
               ),
             ],
           ),
